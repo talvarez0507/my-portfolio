@@ -12,21 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+const allFacts = [
+        'I have a cat named Ash and he loves to jump on my desk!', 
+        'I am a student at Cornell University majoring in Operations Research.', 
+        'I live in Miami, FL.', 
+        'My family is from Colombia.', 
+        'I love doing Project Euler! (add me: 1047518_OObct1RuC9uGHxendSH11pjh77Nw36lG)'
+];
+
+var facts = [...allFacts];
+var finishedOnce = false;
+
 /**
  * Adds a random fact to the page.
  */
+
 function addRandomFact() {
-  const facts =
-      ['I have a cat named Ash and he loves to jump on my desk!', 
-       'I am a student at Cornell University majoring in Operations Research.', 
-       'I live in Miami, FL.', 
-       'My family is from Colombia.', 
-       'I love doing Project Euler! (add me: 1047518_OObct1RuC9uGHxendSH11pjh77Nw36lG)'];
+    if (facts.length > 0) {
+        // Pick a random fact.
+        var index = Math.floor(Math.random() * facts.length);
+        const fact = facts[index];
+        facts.splice(index,1);
+        // Add it to the page.
+        const factContainer = document.getElementById('factContainer');
+        factContainer.innerText = fact;
+    } else if (!finishedOnce) {
+        const factContainer = document.getElementById('factContainer');
+        factContainer.innerText = "You've already seen all the facts! You can keep seeing them by clicking again.";
+        finishedOnce = true;
+        facts = [...allFacts];
+    } else {
+        facts = [...allFacts];
+        addRandomFact();
+    }
 
-  // Pick a random fact.
-  const fact = facts[Math.floor(Math.random() * facts.length)];
-
-  // Add it to the page.
-  const factContainer = document.getElementById('factContainer');
-  factContainer.innerText = fact;
 }
