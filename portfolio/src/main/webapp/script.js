@@ -23,20 +23,27 @@ const allFacts = [
 
 var facts = [...allFacts];
 var finishedOnce = false;
+var last = -1;
 
 /**
  * Adds a random fact to the page.
  */
 
-function addRandomFact() {
+function addRandomFact(prev) {
     if (facts.length > 0) {
         // Pick a random fact.
-        var index = Math.floor(Math.random() * facts.length);
+        const index = Math.floor(Math.random() * facts.length);
         const fact = facts[index];
-        facts.splice(index,1);
-        // Add it to the page.
-        const factContainer = document.getElementById('factContainer');
-        factContainer.innerText = fact;
+        const check = allFacts.indexOf(fact); 
+        if (check===prev) {
+            addRandomFact(last);
+        } else {
+            facts.splice(index,1);
+            // Add it to the page.
+            const factContainer = document.getElementById('factContainer');
+            factContainer.innerText = fact;
+            last = check;
+        }
     } else if (!finishedOnce) {
         const factContainer = document.getElementById('factContainer');
         factContainer.innerText = "You've already seen all the facts! You can keep seeing them by clicking again.";
@@ -44,7 +51,6 @@ function addRandomFact() {
         facts = [...allFacts];
     } else {
         facts = [...allFacts];
-        addRandomFact();
+        addRandomFact(last);
     }
-
 }
