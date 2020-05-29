@@ -18,8 +18,10 @@
 function addRandomFact() {
   const facts =
       ['I have a cat named Ash and he loves to jump on my desk!', 
-      'I am a student at Cornell University majoring in Operations Research.', 
-      'I live in Miami, FL.', 'My family is from Colombia.','I love doing Project Euler! (add me: 1047518_OObct1RuC9uGHxendSH11pjh77Nw36lG)'];
+       'I am a student at Cornell University majoring in Operations Research.', 
+       'I live in Miami, FL.', 
+       'My family is from Colombia.', 
+       'I love doing Project Euler! (add me: 1047518_OObct1RuC9uGHxendSH11pjh77Nw36lG)'];
 
   // Pick a random fact.
   const fact = facts[Math.floor(Math.random() * facts.length)];
