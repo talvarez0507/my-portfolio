@@ -23,34 +23,43 @@ const allFacts = [
 
 var facts = [...allFacts];
 var finishedOnce = false;
-var last = -1;
 
 /**
  * Adds a random fact to the page.
  */
 
-function addRandomFact(prev) {
+function addRandomFact() {
     if (facts.length > 0) {
-        // Pick a random fact.
-        const index = Math.floor(Math.random() * facts.length);
-        const fact = facts[index];
-        const check = allFacts.indexOf(fact); 
-        if (check===prev) {
-            addRandomFact(last);
+        const fact = getRandomFact();
+        const lastFact = getFactText();
+        if (fact===lastFact) {
+            addRandomFact();
         } else {
-            facts.splice(index,1);
-            // Add it to the page.
-            const factContainer = document.getElementById('factContainer');
-            factContainer.innerText = fact;
-            last = check;
+            facts.splice(facts.indexOf(fact), 1);
+            setFactText(fact);
         }
     } else if (!finishedOnce) {
-        const factContainer = document.getElementById('factContainer');
-        factContainer.innerText = "You've already seen all the facts! You can keep seeing them by clicking again.";
+        setFactText("You've already seen all the facts! You can keep seeing them by clicking again.");
         finishedOnce = true;
         facts = [...allFacts];
     } else {
         facts = [...allFacts];
-        addRandomFact(last);
+        addRandomFact();
     }
+}
+
+function getFactText() {
+    const factContainer = document.getElementById('factContainer');
+    return factContainer.innerText;
+}
+
+function setFactText(message) {
+    const factContainer = document.getElementById('factContainer');
+    factContainer.innerText = message;
+}
+
+function getRandomFact() {
+    const index = Math.floor(Math.random() * facts.length);
+    const fact = facts[index];
+    return fact;
 }
