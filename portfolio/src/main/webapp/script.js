@@ -14,11 +14,11 @@
 
 
 const allFacts = [
-        'I have a cat named Ash and he loves to jump on my desk!', 
-        'I am a student at Cornell University majoring in Operations Research.', 
-        'I live in Miami, FL.', 
-        'My family is from Colombia.', 
-        'I love doing Project Euler! (add me: 1047518_OObct1RuC9uGHxendSH11pjh77Nw36lG)'
+  'I have a cat named Ash and he loves to jump on my desk!', 
+  'I am a student at Cornell University majoring in Operations Research.', 
+  'I live in Miami, FL.', 
+  'My family is from Colombia.', 
+  'I love doing Project Euler! (add me: 1047518_OObct1RuC9uGHxendSH11pjh77Nw36lG)'
 ];
 
 var facts = [...allFacts];
@@ -29,37 +29,36 @@ var finishedOnce = false;
  */
 
 function addRandomFact() {
-    if (facts.length > 0) {
-        const fact = getRandomFact();
-        const lastFact = getFactText();
-        if (fact===lastFact) {
-            addRandomFact();
-        } else {
-            facts.splice(facts.indexOf(fact), 1);
-            setFactText(fact);
-        }
-    } else if (!finishedOnce) {
-        setFactText("You've already seen all the facts! You can keep seeing them by clicking again.");
-        finishedOnce = true;
-        facts = [...allFacts];
-    } else {
-        facts = [...allFacts];
-        addRandomFact();
-    }
+  const fact = getNewRandomFact();
+  setFactText(fact);
 }
 
 function getFactText() {
-    const factContainer = document.getElementById('factContainer');
-    return factContainer.innerText;
+  const factContainer = document.getElementById('factContainer');
+  return factContainer.innerText;
 }
 
 function setFactText(message) {
-    const factContainer = document.getElementById('factContainer');
-    factContainer.innerText = message;
+  const factContainer = document.getElementById('factContainer');
+  factContainer.innerText = message;
 }
 
-function getRandomFact() {
-    const index = Math.floor(Math.random() * facts.length);
-    const fact = facts[index];
-    return fact;
+function getNewRandomFact() {
+  if (facts.length > 0) {
+    const fact = facts[Math.floor(Math.random() * facts.length)];
+    const lastFact = getFactText();
+    if (fact === lastFact) {
+      return getNewRandomFact();
+    } else {
+      facts.splice(facts.indexOf(fact), 1);
+      return fact;
+    }
+  } else if (!finishedOnce) {
+    finishedOnce = true;
+    facts = [...allFacts];
+    return "You've already seen all the facts! You can keep seeing them by clicking again.";
+  } else {
+    facts = [...allFacts];
+    return getNewRandomFact();
+    }
 }
