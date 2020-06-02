@@ -4,6 +4,22 @@
   width: 650px;
 }
 
-#greeting-container {
+#picture {
+  margin-left: auto;
+  margin-right: auto;
+  width: 650px;
+}
+
+#fact-container {
   margin-top: 20px;
+}
+
+#social {
+  margin-left: auto;
+  margin-right: auto;
+  width: 650px;
+}
+
+a {
+  text-decoration: none;
 }

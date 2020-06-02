@@ -12,17 +12,53 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+const allFacts = [
+  'I have a cat named Ash and he loves to jump on my desk!', 
+  'I am a student at Cornell University majoring in Operations Research.', 
+  'I live in Miami, FL.', 
+  'My family is from Colombia.', 
+  'I love doing Project Euler! (add me: 1047518_OObct1RuC9uGHxendSH11pjh77Nw36lG)'
+];
+
+var facts = [...allFacts];
+var finishedOnce = false;
+
 /**
- * Adds a random greeting to the page.
+ * Adds a random fact to the page.
  */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+function addRandomFact() {
+  const fact = getNewRandomFact();
+  setFactText(fact);
+}
 
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+function getFactText() {
+  const factContainer = document.getElementById('factContainer');
+  return factContainer.innerText;
+}
+
+function setFactText(message) {
+  const factContainer = document.getElementById('factContainer');
+  factContainer.innerText = message;
+}
+
+function getNewRandomFact() {
+  if (facts.length > 0) {
+    const fact = facts[Math.floor(Math.random() * facts.length)];
+    const lastFact = getFactText();
+    if (fact === lastFact) {
+      return getNewRandomFact();
+    } else {
+      facts.splice(facts.indexOf(fact), 1);
+      return fact;
+    }
+  } else if (!finishedOnce) {
+    finishedOnce = true;
+    facts = [...allFacts];
+    return "You've already seen all the facts! You can keep seeing them by clicking again.";
+  } else {
+    facts = [...allFacts];
+    return getNewRandomFact();
+    }
 }

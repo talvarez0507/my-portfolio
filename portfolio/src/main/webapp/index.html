@@ -2,17 +2,32 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>My Portfolio</title>
+    <title>Tomas' Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
   <body>
     <div id="content">
-      <h1>My Portfolio</h1>
+      <h1>Tomas' Portfolio</h1>
       <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
+      <p>Click on the button to get a random fact about me.</p>
+      <button onclick="addRandomFact()">Fact</button>
+      <div id="factContainer"></div>
+    </div>
+    <div id="picture">
+      <h1>Picture</h1>
+      <img src="images/me.jpeg" alt="My senior picture" height=400>
+      <p>This is a picture of me.</p>
+    </div>
+    <div id="social">
+      <h1>References</h1>
+      <p>Here are some social links.</p>
+      <a id="smallPic1" href="https://github.com/talvarez0507">
+        <img alt="Github" src="images/github.png" height=100 width=100>
+      </a>
+      <a id="smallPic2" href="https://www.linkedin.com/in/tomas-alvarez-71779418b">
+        <img alt="LinkedIn" src="images/linkedin.jpeg" height=100 width=120>
+      </a>
     </div>
   </body>
 </html>
