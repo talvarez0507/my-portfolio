@@ -62,3 +62,18 @@ function getNewRandomFact() {
     return getNewRandomFact();
     }
 }
+
+function getRandomQuote() {
+  const responsePromise = fetch('/data');
+  responsePromise.then(handleResponse);
+}
+
+function handleResponse(response) {
+  const textPromise = response.text();
+  textPromise.then(addQuoteToDom);
+}
+
+function addQuoteToDom(quote) {
+  const quoteContainer = document.getElementById('quoteContainer');
+  quoteContainer.innerText = quote;
+} 
