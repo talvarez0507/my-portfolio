@@ -13,6 +13,12 @@
       <p>Click on the button to get a random fact about me.</p>
       <button onclick="addRandomFact()">Fact</button>
       <div id="factContainer"></div>
+      <form action="/data" method="POST">
+        <p>Add comment:</p>
+        <input type="text" name="CommentText">
+        <br/><br/>
+        <input type="submit" />
+        </form>
       <button onclick="getComments()">Fetch Comments!</button>
       <div id="commentContainer"></div>
     </div>
