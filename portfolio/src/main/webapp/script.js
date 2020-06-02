@@ -63,17 +63,19 @@ function getNewRandomFact() {
     }
 }
 
-function getRandomQuote() {
-  const responsePromise = fetch('/data');
-  responsePromise.then(handleResponse);
+function getComments() {
+  fetch('/data').then(response => response.json()).then((comments) => {
+    const commentsListElement = document.getElementById('commentContainer');
+    commentsListElement.innerHTML = '';
+    for (i = 0; i < comments.length; i++) {
+      commentsListElement.appendChild(
+          createListElement(comments[i]));
+    }
+  });
 }
 
-function handleResponse(response) {
-  const textPromise = response.text();
-  textPromise.then(addQuoteToDom);
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
 }
-
-function addQuoteToDom(quote) {
-  const quoteContainer = document.getElementById('quoteContainer');
-  quoteContainer.innerText = quote;
-} 
