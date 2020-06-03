@@ -69,7 +69,7 @@ function getComments() {
     commentsListElement.innerHTML = '';
     for (i = 0; i < comments.length; i++) {
       commentsListElement.appendChild(
-          createListElement(comments[i]));
+          createListElement(comments[i].text));
     }
   });
 }
