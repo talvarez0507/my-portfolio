@@ -34,30 +34,27 @@ import java.util.ArrayList;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-    
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+    //Query object given from Datastore
     Query query = new Query("Comment").addSort("Timestamp", SortDirection.DESCENDING);
-    
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-
+    /**
+     * Arraylist called comments that contains Comments, which are objects from
+     * a class with some basic fields for relevant data
+     */ 
     List<Comment> comments = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
       long id = entity.getKey().getId();
       String text = (String) entity.getProperty("Text");
       long timestamp = (long) entity.getProperty("Timestamp");
-
+      /** This variable comment becomes a Comment object based on the data*/
       Comment comment = new Comment(id, text, timestamp);
       comments.add(comment);
     }
-
     response.setContentType("application/json;");
     response.getWriter().println(convertToJson(comments));
-
-
-
   }
 
   private String convertToJson(List list) {
@@ -70,22 +67,16 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = processComment(request);
     long timestamp = System.currentTimeMillis();
-
     Entity taskEntity = new Entity("Comment");
     taskEntity.setProperty("Text", comment);
     taskEntity.setProperty("Timestamp", timestamp);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(taskEntity);
-
     response.sendRedirect("/index.html");
-
   }
+
   private String processComment(HttpServletRequest request) {
     String CommentText = request.getParameter("CommentText");
     return CommentText;
   }
-
-
-
 }
