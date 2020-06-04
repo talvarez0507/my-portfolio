@@ -19,7 +19,13 @@
         <br/><br/>
         <input type="submit" />
       </form>
-      <button onclick="getComments()">Fetch Comments!</button>
+      <form action=''> 
+        <p>How many Comments?:</p>
+        <input id="numberOf" type="number" name="numberOf" min="0" value="0">
+        <br/><br/>
+        <input type="button" onclick="setComments()" value = "Update Comments Showing"/>
+      </form>
+      <div id="maxComments">Comments Showing: 0</div>
       <div id="commentContainer"></div>
     </div>
     <div id="picture">

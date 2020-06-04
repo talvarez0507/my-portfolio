@@ -63,8 +63,18 @@ function getNewRandomFact() {
     }
 }
 
+function setComments(){
+  var field1 = document.getElementById('numberOf');
+  var field2 = document.getElementById('maxComments');
+  var num = field1.value;
+  field2.innerText = "Comments Showing: "+num.toString();
+  getComments();
+  }
+
 function getComments() {
-  fetch('/data').then(response => response.json()).then((comments) => {
+
+  const maxComments= document.getElementById('maxComments').innerText.substring(18);
+  fetch('/data?maxComments='+maxComments.toString()).then(response => response.json()).then((comments) => {
     const commentsListElement = document.getElementById('commentContainer');
     commentsListElement.innerHTML = '';
     for (i = 0; i < comments.length; i++) {

@@ -40,18 +40,23 @@ public class DataServlet extends HttpServlet {
     Query query = new Query("Comment").addSort("Timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
+    System.err.println(processNumber(request));
+    int maxComments = processNumber(request);
     /**
      * Arraylist called comments that contains Comments, which are objects from
      * a class with some basic fields for relevant data
      */ 
+    int i = 1;
     List<Comment> comments = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
+      if (i > maxComments) break;
       long id = entity.getKey().getId();
       String text = (String) entity.getProperty("Text");
       long timestamp = (long) entity.getProperty("Timestamp");
       /** This variable comment becomes a Comment object based on the data */
       Comment comment = new Comment(id, text, timestamp);
       comments.add(comment);
+      i+=1;
     }
     response.setContentType("application/json;");
     response.getWriter().println(convertToJson(comments));
@@ -78,5 +83,23 @@ public class DataServlet extends HttpServlet {
   private String processComment(HttpServletRequest request) {
     String CommentText = request.getParameter("CommentText");
     return CommentText;
+  }
+
+  private int processNumber(HttpServletRequest request) {
+
+    String maxCommentsString = request.getParameter("maxComments");
+    int maxComments;
+    try {
+      maxComments = Integer.parseInt(maxCommentsString);
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert to int: " + maxCommentsString);
+      return 0;
+    }
+    if (maxComments < 0 ) {
+      System.err.println("Amount is less than 1: " + maxCommentsString);
+      return 0;
+    }
+    return maxComments;
+
   }
 }
