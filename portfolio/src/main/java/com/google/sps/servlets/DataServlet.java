@@ -67,11 +67,11 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = processComment(request);
     long timestamp = System.currentTimeMillis();
-    Entity taskEntity = new Entity("Comment");
-    taskEntity.setProperty("Text", comment);
-    taskEntity.setProperty("Timestamp", timestamp);
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("Text", comment);
+    commentEntity.setProperty("Timestamp", timestamp);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(taskEntity);
+    datastore.put(commentEntity);
     response.sendRedirect("/index.html");
   }
 
