@@ -48,15 +48,19 @@ public class DataServlet extends HttpServlet {
     // a class with some basic fields for relevant data
     List<Comment> comments = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      long id = entity.getKey().getId();
-      String text = (String) entity.getProperty(textString);
-      long timestamp = (long) entity.getProperty(timeString);
-      // This variable comment becomes a Comment object based on the data 
-      Comment comment = new Comment(id, text, timestamp);
-      comments.add(comment);
+      comments.add(entityToComment(entity));
     }
     response.setContentType("application/json;");
     response.getWriter().println(convertToJson(comments));
+  }
+
+  private Comment entityToComment(Entity entity) {
+    long id = entity.getKey().getId();
+    String text = (String) entity.getProperty(textString);
+    long timestamp = (long) entity.getProperty(timeString);
+    // This variable comment becomes a Comment object based on the data 
+    Comment comment = new Comment(id, text, timestamp);
+    return comment;
   }
 
   private String convertToJson(List list) {
