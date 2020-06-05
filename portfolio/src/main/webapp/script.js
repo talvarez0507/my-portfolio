@@ -68,12 +68,11 @@ function setComments(){
   var field2 = document.getElementById('maxComments');
   var num = field1.value;
   field2.innerText = "Comments Showing: "+num.toString();
-  getComments();
+  const maxComments= document.getElementById('maxComments').innerText.substring(18);
+  getComments(maxComments);
   }
 
-function getComments() {
-
-  const maxComments= document.getElementById('maxComments').innerText.substring(18);
+function getComments(maxComments) {
   fetch('/data?maxComments='+maxComments.toString()).then(response => response.json()).then((comments) => {
     const commentsListElement = document.getElementById('commentContainer');
     commentsListElement.innerHTML = '';
@@ -88,4 +87,11 @@ function createListElement(text) {
   const liElement = document.createElement('li');
   liElement.innerText = text;
   return liElement;
+}
+
+function deleteComments() {
+  var init = { method: 'POST'};
+  var request = new Request('/delete-data',init);
+
+  fetch(request).then(getComments(0));
 }

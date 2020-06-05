@@ -33,33 +33,39 @@ import java.util.ArrayList;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-
+  
+  private static final String commentString = "Comment";
+  private static final String timeString = "Timestamp";
+  private static final String textString = "Text";
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    /** Query object given from Datastore */
-    Query query = new Query("Comment").addSort("Timestamp", SortDirection.DESCENDING);
+    // Query object given from Datastore
+    Query query = new Query(commentString).addSort(timeString, SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     System.err.println(processNumber(request));
     int maxComments = processNumber(request);
-    /**
-     * Arraylist called comments that contains Comments, which are objects from
-     * a class with some basic fields for relevant data
-     */ 
-    int i = 1;
+    // Arraylist called comments that contains Comments, which are objects from
+    // a class with some basic fields for relevant data
     List<Comment> comments = new ArrayList<>();
+    int i = 1;
     for (Entity entity : results.asIterable()) {
       if (i > maxComments) break;
-      long id = entity.getKey().getId();
-      String text = (String) entity.getProperty("Text");
-      long timestamp = (long) entity.getProperty("Timestamp");
-      /** This variable comment becomes a Comment object based on the data */
-      Comment comment = new Comment(id, text, timestamp);
-      comments.add(comment);
+      comments.add(entityToComment(entity));
       i+=1;
     }
     response.setContentType("application/json;");
     response.getWriter().println(convertToJson(comments));
+  }
+
+  private Comment entityToComment(Entity entity) {
+    long id = entity.getKey().getId();
+    String text = (String) entity.getProperty(textString);
+    long timestamp = (long) entity.getProperty(timeString);
+    // This variable comment becomes a Comment object based on the data 
+    Comment comment = new Comment(id, text, timestamp);
+    return comment;
   }
 
   private String convertToJson(List list) {
@@ -72,9 +78,9 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = processComment(request);
     long timestamp = System.currentTimeMillis();
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("Text", comment);
-    commentEntity.setProperty("Timestamp", timestamp);
+    Entity commentEntity = new Entity(commentString);
+    commentEntity.setProperty(textString, comment);
+    commentEntity.setProperty(timeString, timestamp);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
     response.sendRedirect("/index.html");
@@ -86,7 +92,6 @@ public class DataServlet extends HttpServlet {
   }
 
   private int processNumber(HttpServletRequest request) {
-
     String maxCommentsString = request.getParameter("maxComments");
     int maxComments;
     try {
