@@ -76,11 +76,12 @@ function getComments(maxComments) {
   fetch('/data?maxComments='+maxComments.toString()).then(response => response.json()).then((comments) => {
     const commentsListElement = document.getElementById('commentContainer');
     commentsListElement.innerHTML = '';
-    for (i = 0; i < comments.length; i++) {
-      commentsListElement.appendChild(
-          createListElement(comments[i].text));
-    }
+    comments.forEach(addCommentToPage);
   });
+}
+
+function addCommentToPage(comment) {
+  commentsListElement.appendChild(createListElement(comment.text));
 }
 
 function createListElement(text) {
