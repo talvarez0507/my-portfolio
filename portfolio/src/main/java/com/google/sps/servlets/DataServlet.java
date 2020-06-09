@@ -68,9 +68,9 @@ public class DataServlet extends HttpServlet {
     return comment;
   }
 
-  private String convertToJson(List list) {
+  private String convertToJson(List<Comment> comments) {
     Gson gson = new Gson();
-    String json = gson.toJson(list);
+    String json = gson.toJson(comments);
     return json;
   }
 
