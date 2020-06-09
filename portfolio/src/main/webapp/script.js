@@ -72,6 +72,7 @@ function getComments() {
 }
 
 function addCommentToPage(comment) {
+  commentsListElement = document.getElementById('commentContainer');
   commentsListElement.appendChild(createListElement(comment.text));
 }
 
