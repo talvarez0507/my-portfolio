@@ -18,7 +18,7 @@ const allFacts = [
   'I am a student at Cornell University majoring in Operations Research.', 
   'I live in Miami, FL.', 
   'My family is from Colombia.', 
-  'I love doing Project Euler! (add me: 1047518_OObct1RuC9uGHxendSH11pjh77Nw36lG)'
+  'I enjoy doing Project Euler! (add me: 1047518_OObct1RuC9uGHxendSH11pjh77Nw36lG)'
 ];
 
 var facts = [...allFacts];
@@ -64,13 +64,12 @@ function getNewRandomFact() {
 }
 
 function setComments(){
-  var field1 = document.getElementById('numberOf');
-  var field2 = document.getElementById('maxComments');
-  var num = field1.value;
-  field2.innerText = "Comments Showing: "+num.toString();
-  const maxComments= document.getElementById('maxComments').innerText.substring(18);
+  var field1 = document.getElementById('maxComments');
+  field1.innerText = 'Comments Showing: 0';
+  const maxComments= document.getElementById('numberOf').value;
   getComments(maxComments);
-  }
+}
+
 
 function getComments(maxComments) {
   fetch('/data?maxComments='+maxComments.toString()).then(response => response.json()).then((comments) => {
@@ -81,13 +80,16 @@ function getComments(maxComments) {
 }
 
 function addCommentToPage(comment) {
-  commentsListElement.appendChild(createListElement(comment.text));
+  var field2 = document.getElementById('maxComments');
+  const num = parseInt(field2.innerText.substring(18));
+  field2.innerText = "Comments Showing: "+(num+1).toString();
+
+  commentsListElement = document.getElementById('commentContainer');
+  commentsListElement.innerHTML += createCommentDiv(comment.text,num+1);
 }
 
-function createListElement(text) {
-  const liElement = document.createElement('li');
-  liElement.innerText = text;
-  return liElement;
+function createCommentDiv(text,num) {
+  return "<div id=\"comment"+num.toString()+"\">"+text+"</div>";
 }
 
 function deleteComments() {
@@ -95,4 +97,19 @@ function deleteComments() {
   var request = new Request('/delete-data',init);
 
   fetch(request).then(getComments(0));
+  var field1 = document.getElementById('maxComments');
+  field1.innerText = 'Comments Showing: 0';
+}
+
+function checkUser() {
+  fetch('/login').then(response => response.json()).then((html) => {
+    console.log(html);
+    const userInfoElement = document.getElementById('userInfo');
+    userInfoElement.innerHTML = '';
+    html.forEach(addUserInfo);
+  });
+}
+
+function addUserInfo(text) {
+    document.getElementById('userInfo').innerHTML += text;
 }
