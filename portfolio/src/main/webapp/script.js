@@ -103,13 +103,27 @@ function deleteComments() {
 
 function checkUser() {
   fetch('/login').then(response => response.json()).then((html) => {
-    console.log(html);
-    const userInfoElement = document.getElementById('userInfo');
-    userInfoElement.innerHTML = '';
-    html.forEach(addUserInfo);
+    // If User has no nickname, display nickname form
+    if (html[0]==="need_nickname") {
+        console.log(html);
+        showNicknameForm();
+        html.splice(0, 1);
+    } 
+    arrayToUserInfo(html);
   });
 }
 
-function addUserInfo(text) {
+function showNicknameForm() {
+    fetch('/nickname').then(response => response.json()).then((html) => {
+    arrayToUserInfo(html);
+    });
+}
+
+function arrayToUserInfo(array) {
+    array.forEach(textToUserInfo);
+}
+
+function textToUserInfo(text) {
     document.getElementById('userInfo').innerHTML += text;
+    console.log(text);
 }

@@ -31,6 +31,7 @@ public class LoginServlet extends HttpServlet {
     List<String> html = new ArrayList<>();
     // User is not logged in then display a login link
     if (!userService.isUserLoggedIn()) {
+      //System.err.println("Not logged in");
       String urlToRedirectToAfterUserLogsIn = "/";
       String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
       html.add("<p>Hello stranger.</p>");
@@ -41,15 +42,18 @@ public class LoginServlet extends HttpServlet {
     // User has not set a nickname, redirect to the set nickname page
     String nickname = getUserNickname(userService.getCurrentUser().getUserId());
     if (nickname == null) {
-      response.sendRedirect("/nickname");
-      return;
+      html.add("need_nickname");
+      // Only for UI purposes, to display "stranger" for their logout link
+      nickname = "stranger";
+      //response.sendRedirect("/nickname");
     } 
-    // User is logged in and has a nickname then display a logout link
+    // User is logged in so display a logout link
     String urlToRedirectToAfterUserLogsOut = "/";
     String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);  
     html.add("<p>Hello " + nickname + "!</p>");
     html.add("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
     out.println(convertToJson(html));
+    return;
   }
 
   private String convertToJson(List list) {
