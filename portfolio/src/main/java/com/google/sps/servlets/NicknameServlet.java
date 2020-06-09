@@ -14,6 +14,11 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
+import com.google.appengine.api.datastore.DatastoreServiceConfig.Builder;  
+import com.google.appengine.api.datastore.ReadPolicy;
+import com.google.appengine.api.datastore.ReadPolicy.Consistency; 
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -61,7 +66,7 @@ public class NicknameServlet extends HttpServlet {
     }
     String nickname = request.getParameter("nickname");
     String id = userService.getCurrentUser().getUserId();
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    DatastoreService datastore = getDatastore();
     Entity entity = new Entity("UserInfo", id);
     entity.setProperty("id", id);
     entity.setProperty("nickname", nickname);
@@ -69,9 +74,9 @@ public class NicknameServlet extends HttpServlet {
     response.sendRedirect("/");
   }
 
-  private String convertToJson(List list) {
+  private String convertToJson(List<String> html) {
     Gson gson = new Gson();
-    String json = gson.toJson(list);
+    String json = gson.toJson(html);
     return json;
   }
 
@@ -93,7 +98,12 @@ public class NicknameServlet extends HttpServlet {
     // added to the page, in the JS, the form opening and closing must be in  
     // the same string 
     html.add(s4+s5+s6+s7+s8);
+  }
 
-
+  private DatastoreService getDatastore() {
+    DatastoreServiceConfig datastoreConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(
+        new ReadPolicy(Consistency.STRONG)).deadline(5.0);
+    return DatastoreServiceFactory.getDatastoreService(datastoreConfig);
   }
 }

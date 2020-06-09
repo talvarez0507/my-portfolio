@@ -14,6 +14,11 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
+import com.google.appengine.api.datastore.DatastoreServiceConfig.Builder;  
+import com.google.appengine.api.datastore.ReadPolicy;
+import com.google.appengine.api.datastore.ReadPolicy.Consistency; 
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -42,12 +47,19 @@ public class DeleteServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query("Comment");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    DatastoreService datastore = getDatastore();
     PreparedQuery results = datastore.prepare(query);
 
     for (Entity entity : results.asIterable()) {
       Key commentKey = entity.getKey();
       datastore.delete(commentKey);
     }
+  }
+
+  private DatastoreService getDatastore() {
+    DatastoreServiceConfig datastoreConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(
+        new ReadPolicy(Consistency.STRONG)).deadline(5.0);
+    return DatastoreServiceFactory.getDatastoreService(datastoreConfig);
   }
 }

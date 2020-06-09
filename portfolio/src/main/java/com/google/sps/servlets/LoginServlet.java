@@ -3,6 +3,11 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
+import com.google.appengine.api.datastore.DatastoreServiceConfig.Builder;  
+import com.google.appengine.api.datastore.ReadPolicy;
+import com.google.appengine.api.datastore.ReadPolicy.Consistency; 
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -57,14 +62,14 @@ public class LoginServlet extends HttpServlet {
     return;
   }
 
-  private String convertToJson(List list) {
+  private String convertToJson(List<String> html) {
     Gson gson = new Gson();
-    String json = gson.toJson(list);
+    String json = gson.toJson(html);
     return json;
   }
 
   private String getUserNickname(String id) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    DatastoreService datastore = getDatastore();
     Query query =
         new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
@@ -76,7 +81,13 @@ public class LoginServlet extends HttpServlet {
     String nickname = (String) entity.getProperty("nickname");
     return nickname;
   }
-
+ 
+  private DatastoreService getDatastore() {
+    DatastoreServiceConfig datastoreConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(
+        new ReadPolicy(Consistency.STRONG)).deadline(5.0);
+    return DatastoreServiceFactory.getDatastoreService(datastoreConfig);
+  }
 
 
 }
