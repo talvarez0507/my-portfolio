@@ -104,12 +104,21 @@ function deleteComments() {
 function checkUser() {
   fetch('/login').then(response => response.json()).then((html) => {
     // If User has no nickname, display nickname form
-    if (html[0]==="need_nickname") {
-        console.log(html);
+    if (html[0]==="needNickname") {
         showNicknameForm();
         html.splice(0, 1);
-    } 
-    arrayToUserInfo(html);
+        arrayToUserInfo(html);
+        loadComments(0);
+    // If User is not logged in
+    } else if (html[0]==="needLogin") {
+        html.splice(0, 1);
+        arrayToUserInfo(html);
+        loadComments(1);
+    } else {
+        arrayToUserInfo(html);
+        loadComments(2);
+    }
+    
   });
 }
 
@@ -125,5 +134,22 @@ function arrayToUserInfo(array) {
 
 function textToUserInfo(text) {
     document.getElementById('userInfo').innerHTML += text;
-    console.log(text);
+}
+
+function loadComments(num) {
+    commentElement = document.getElementById('comments');
+    messageElement = document.getElementById('possibleMessage');
+    if (num===0) {
+        commentElement.style.display = "none";
+        console.log("hidden");
+        messageElement.innerHTML = "<h2>You need to set your nickname to see comments.</h2>" 
+        
+    } else if (num===1){
+        console.log("hidden");
+        commentElement.style.display = "none";
+        messageElement.innerHTML = "<h2>You need to log in to see comments.</h2>" 
+    } else {
+        console.log("shown");
+        commentElement.style.display = "block";
+    }
 }

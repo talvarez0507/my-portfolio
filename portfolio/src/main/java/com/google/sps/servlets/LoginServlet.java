@@ -32,6 +32,7 @@ public class LoginServlet extends HttpServlet {
     // User is not logged in then display a login link
     if (!userService.isUserLoggedIn()) {
       //System.err.println("Not logged in");
+      html.add("needLogin");
       String urlToRedirectToAfterUserLogsIn = "/";
       String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
       html.add("<p>Hello stranger.</p>");
@@ -42,7 +43,7 @@ public class LoginServlet extends HttpServlet {
     // User has not set a nickname, redirect to the set nickname page
     String nickname = getUserNickname(userService.getCurrentUser().getUserId());
     if (nickname == null) {
-      html.add("need_nickname");
+      html.add("needNickname");
       // Only for UI purposes, to display "stranger" for their logout link
       nickname = "stranger";
       //response.sendRedirect("/nickname");
