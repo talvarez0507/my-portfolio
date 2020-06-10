@@ -70,7 +70,6 @@ function setComments(){
   getComments(maxComments);
 }
 
-
 function getComments(maxComments) {
   fetch('/data?maxComments='+maxComments.toString()).then(response => response.json()).then((comments) => {
     const commentsListElement = document.getElementById('commentContainer');
@@ -86,6 +85,12 @@ function addCommentToPage(comment) {
 
   commentsListElement = document.getElementById('commentContainer');
   commentsListElement.innerHTML += createCommentDiv(comment.text,num+1);
+}
+
+function getNumberOfComments() {
+  var commentElement = document.getElementById('maxComments');
+  const num = parseInt(commentElement.innerText.substring(18));
+  return num;
 }
 
 function createCommentDiv(text,num) {
@@ -141,15 +146,38 @@ function loadComments(num) {
     messageElement = document.getElementById('possibleMessage');
     if (num===0) {
         commentElement.style.display = "none";
-        console.log("hidden");
         messageElement.innerHTML = "<h2>You need to set your nickname to see comments.</h2>" 
-        
     } else if (num===1){
-        console.log("hidden");
         commentElement.style.display = "none";
         messageElement.innerHTML = "<h2>You need to log in to see comments.</h2>" 
     } else {
-        console.log("shown");
         commentElement.style.display = "block";
+    }
+}
+
+function performTranslation(text, resultContainer) {
+  const languageCode = document.getElementById('language').value;
+
+  resultContainer.innerText = 'Loading...';
+
+  const params = new URLSearchParams();
+  params.append('text', text);
+  params.append('languageCode', languageCode);
+
+  fetch('/translate', {
+    method: 'POST',
+    body: params
+  }).then(response => response.text())
+  .then((translatedMessage) => {
+    resultContainer.innerText = translatedMessage;
+  });
+}
+
+function translateComments() {
+  var amount = getNumberOfComments();
+  for (i = 1; i <= amount; i++) {
+    const container = document.getElementById('comment'+i.toString())
+    const text = container.innerText;
+    performTranslation(text,container);    
     }
 }
