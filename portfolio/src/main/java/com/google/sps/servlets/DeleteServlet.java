@@ -41,22 +41,18 @@ import java.util.ArrayList;
 public class DeleteServlet extends HttpServlet {
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-  }
-
-  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query("Comment");
     DatastoreService datastore = getDatastore();
     PreparedQuery results = datastore.prepare(query);
-
+    List<Key> keysToDelete = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      Key commentKey = entity.getKey();
-      datastore.delete(commentKey);
+      keysToDelete.add(entity.getKey());
     }
+    datastore.delete(keysToDelete);
   }
 
-  private DatastoreService getDatastore() {
+  private static DatastoreService getDatastore() {
     DatastoreServiceConfig datastoreConfig =
     DatastoreServiceConfig.Builder.withReadPolicy(
         new ReadPolicy(Consistency.STRONG)).deadline(5.0);
