@@ -62,3 +62,22 @@ function getNewRandomFact() {
     return getNewRandomFact();
     }
 }
+
+function getComments() {
+  fetch('/data').then(response => response.json()).then((comments) => {
+    const commentsListElement = document.getElementById('commentContainer');
+    commentsListElement.innerHTML = '';
+    comments.forEach(addCommentToPage);
+  });
+}
+
+function addCommentToPage(comment) {
+  commentsListElement = document.getElementById('commentContainer');
+  commentsListElement.appendChild(createListElement(comment.text));
+}
+
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
+}
