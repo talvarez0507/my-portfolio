@@ -94,7 +94,7 @@ function getNumberOfComments() {
 }
 
 function createCommentDiv(text,num) {
-  return "<div id=\"comment"+num.toString()+"\">"+text+"</div>";
+  return "<div id=\"comment"+num.toString()+"\">"+text+"</div><hr>";
 }
 
 function deleteComments() {
