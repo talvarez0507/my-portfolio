@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import java.util.List;  
 import java.util.ArrayList;  
 import com.google.gson.Gson;
@@ -76,12 +77,11 @@ public class LoginServlet extends HttpServlet {
         new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
     PreparedQuery results = datastore.prepare(query);
-    Entity entity = results.asSingleEntity();
-    if (entity == null) {
-      return null;
+    Optional<Entity> entity= Optional.ofNullable(results.asSingleEntity());
+    if (entity.isPresent()) {
+        return (String) entity.get().getProperty("nickname");
     }
-    String nickname = (String) entity.getProperty("nickname");
-    return nickname;
+    return null;
   }
  
   private static DatastoreService getDatastore() {
