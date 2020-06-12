@@ -41,23 +41,6 @@ import com.google.gson.Gson;
 public class NicknameServlet extends HttpServlet {
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html");
-    PrintWriter out = response.getWriter();
-    List<String> html = new ArrayList<>();
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      // Creates a form on the page that creates a nickname through a POST
-      // request on this servlet     
-      addFormHTML(html);
-    } else {
-      String loginUrl = userService.createLoginURL("/nickname");
-      html.add("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
-    }
-    out.println(convertToJson(html));
-  }
-
-  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     if (!userService.isUserLoggedIn()) {
@@ -74,33 +57,7 @@ public class NicknameServlet extends HttpServlet {
     response.sendRedirect("/");
   }
 
-  private String convertToJson(List<String> html) {
-    Gson gson = new Gson();
-    String json = gson.toJson(html);
-    return json;
-  }
-
-  private void addFormHTML(List<String> html) {
-    String s1 = "<h1>Set Nickname</h1>";
-    String s2 = "<h2>It appears that you're logged in, but have no nickname.</h2>";
-    String s3 = "<p>Create your nickname here:</p>";
-    html.add(s1);
-    html.add(s2);
-    html.add(s3);
-
-    String s4 = "<form method=\"POST\" action=\"/nickname\">";
-    String s5 = "<input name=\"nickname\" value=\"\" />";
-    String s6 = "<br/>";
-    String s7 = "<button class=\"button\">Create</button>";
-    String s8 = "</form>";
-
-    // This cannot be added to html separately because when the html is later 
-    // added to the page, in the JS, the form opening and closing must be in  
-    // the same string 
-    html.add(s4+s5+s6+s7+s8);
-  }
-
-  private DatastoreService getDatastore() {
+  private static DatastoreService getDatastore() {
     DatastoreServiceConfig datastoreConfig =
     DatastoreServiceConfig.Builder.withReadPolicy(
         new ReadPolicy(Consistency.STRONG)).deadline(5.0);
