@@ -119,6 +119,7 @@ function loadComments(num) {
     messageElement = document.getElementById('possibleMessage');
     if (num === 0) {
       commentElement.style.display = "none";
+<<<<<<< HEAD
       translationElement.style.display = "none";
       messageElement.innerHTML = "<h2>You need to set your nickname to see comments.</h2>" 
     } else if (num === 1){
@@ -128,6 +129,14 @@ function loadComments(num) {
     } else {
       commentElement.style.display = "block";
       translationElement.style.display = "block";
+=======
+      messageElement.innerHTML = "<h2>You need to set your nickname to see comments.</h2>" 
+    } else if (num === 1){
+      commentElement.style.display = "none";
+      messageElement.innerHTML = "<h2>You need to log in to see comments.</h2>" 
+    } else {
+      commentElement.style.display = "block";
+>>>>>>> e1abd3f3814b7148a19d4a6b9e02c0ff5e7c941c
     }
 }
 
@@ -154,7 +163,11 @@ function translateAndAddComment(item, index) {
 
 function translateComments() {
   var amount = getNumberOfComments();
+<<<<<<< HEAD
   fetch('/data?maxComments='+amount.toString()).then(response => response.json()).then((comments) => {
+=======
+  fetch('/data?maxComments='+amount.toString()).then(response => response.json()).then((comments) => {t
+>>>>>>> e1abd3f3814b7148a19d4a6b9e02c0ff5e7c941c
     // comments is an array of objects with .text containing the comment text
     comments.forEach(translateAndAddComment);
   });

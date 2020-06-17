@@ -58,7 +58,11 @@ public class LoginServlet extends HttpServlet {
       out.println("<h2>It appears that you're logged in, but have no nickname.</h2>");
       out.println( "<p>Create your nickname here:</p>");
       out.println("<form method=\"POST\" action=\"/nickname\">");
+<<<<<<< HEAD
       out.println("<input name=\"nickname\" value=\"\" />");
+=======
+      out.println("<input name=\"nickname\" value=\"" + nickname + "\" />");
+>>>>>>> e1abd3f3814b7148a19d4a6b9e02c0ff5e7c941c
       out.println("<br/>");
       out.println("<button class=\"button\">Create</button>");
       out.println("</form>");
