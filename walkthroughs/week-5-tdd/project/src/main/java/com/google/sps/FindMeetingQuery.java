@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Comparator;
+import java.util.Set;
 
 public final class FindMeetingQuery {
 
@@ -36,7 +37,7 @@ public final class FindMeetingQuery {
 
     // Make a List (instead of Collection) out of events so we can sort it.
     eventsAsList.addAll(events);
-    // Sort events by start time. 
+    // Sort events based on their TimeRange's start time. 
     Collections.sort(eventsAsList, new Comparator<Event>() {
 	  @Override
 	  public int compare(Event e1, Event e2) {
@@ -67,17 +68,15 @@ public final class FindMeetingQuery {
       TimeRange eventTimeRange = e.getWhen();
       // Make sure the event is relevant i.e. that someone attending the event is
       // actually requesting to be in the meeting as well 
-      for (String person: e.getAttendees()) {
-        if (attendees.contains(person)) {
-          // Make sure the time window is enough between the start of event
-          // and the earliest time for the window of the meeting.
-          if (eventTimeRange.start() - earliestPossibleSoFar >= duration) {
-            possibleTimes.add(TimeRange.fromStartEnd(earliestPossibleSoFar, eventTimeRange.start(), false));
-          }
-          earliestPossibleSoFar = Math.max(earliestPossibleSoFar, eventTimeRange.end());
-          // we break because we don't need to process the event more than once
-          break;
+      HashSet<String> intersection = new HashSet<String>(attendees);
+      intersection.retainAll(e.getAttendees());
+      if (intersection.size() > 0) {
+        // Make sure the time window is enough between the start of event
+        // and the earliest time for the window of the meeting.
+        if (eventTimeRange.start() - earliestPossibleSoFar >= duration) {
+          possibleTimes.add(TimeRange.fromStartEnd(earliestPossibleSoFar, eventTimeRange.start(), false));
         }
+        earliestPossibleSoFar = Math.max(earliestPossibleSoFar, eventTimeRange.end());
       }
     }
     // The end of the day is potentially never included so we check to make sure
