@@ -46,10 +46,17 @@ public class LoginServlet extends HttpServlet {
       out.println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
       return;
     }
-    String nickname = getUserNickname(userService.getCurrentUser().getUserId());
+    Optional<String> nickname = getUserNickname(userService.getCurrentUser().getUserId());
     String logoutUrl = userService.createLogoutURL(REDIRECT_URL);  
+    // User has set a nickname.
+    if (nickname.isPresent()) {
+      // This is here so I know whether to load comments or not.
+      out.println("2");
+      out.println("<p>Hello " + nickname.get() + "!</p>");
+      out.println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
+      return;
     // User has not set a nickname, display the form for creating a nickname.
-    if (nickname == null) {
+    } else {
       // This is here so I know whether to load comments or not.
       out.println("0");
       out.println("<p>Hello stranger!</p>");
@@ -58,34 +65,21 @@ public class LoginServlet extends HttpServlet {
       out.println("<h2>It appears that you're logged in, but have no nickname.</h2>");
       out.println( "<p>Create your nickname here:</p>");
       out.println("<form method=\"POST\" action=\"/nickname\">");
-<<<<<<< HEAD
       out.println("<input name=\"nickname\" value=\"\" />");
-=======
-      out.println("<input name=\"nickname\" value=\"" + nickname + "\" />");
->>>>>>> e1abd3f3814b7148a19d4a6b9e02c0ff5e7c941c
       out.println("<br/>");
       out.println("<button class=\"button\">Create</button>");
       out.println("</form>");
       return;
     } 
-    // This is here so I know whether to load comments or not.
-    out.println("2");
-    out.println("<p>Hello " + nickname + "!</p>");
-    out.println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
-    return;
   }
 
-  private String getUserNickname(String id) {
+  private Optional<String> getUserNickname(String id) {
     DatastoreService datastore = getDatastore();
     Query query =
         new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
     PreparedQuery results = datastore.prepare(query);
-    Optional<Entity> entity= Optional.ofNullable(results.asSingleEntity());
-    if (entity.isPresent()) {
-        return (String) entity.get().getProperty("nickname");
-    }
-    return null;
+    return Optional.ofNullable(results.asSingleEntity()).map(entity -> (String) entity.getProperty("nickname"));
   }
  
   private static DatastoreService getDatastore() {
