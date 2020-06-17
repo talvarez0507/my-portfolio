@@ -94,7 +94,7 @@ function getNumberOfComments() {
 }
 
 function createCommentDiv(text,num) {
-  return "<div id=\"comment"+num.toString()+"\">"+text+"</div>";
+  return "<div id=\"comment"+num.toString()+"\">"+text+"</div><hr>";
 }
 
 function deleteComments() {
@@ -107,63 +107,36 @@ function deleteComments() {
 }
 
 function checkUser() {
-  fetch('/login').then(response => response.json()).then((html) => {
-    // If User has no nickname, display nickname form
-    if (html[0]==="needNickname") {
-        showNicknameForm();
-        html.splice(0, 1);
-        arrayToUserInfo(html);
-        loadComments(0);
-    // If User is not logged in
-    } else if (html[0]==="needLogin") {
-        html.splice(0, 1);
-        arrayToUserInfo(html);
-        loadComments(1);
-    } else {
-        arrayToUserInfo(html);
-        loadComments(2);
-    }
-    
+  fetch('/login').then((html) => html.text()).then((html) =>{
+    loadComments(parseInt(html.substring(0,1)));
+    document.getElementById('userInfo').innerHTML += html.substring(1);
   });
-}
-
-function showNicknameForm() {
-    fetch('/nickname').then(response => response.json()).then((html) => {
-    arrayToUserInfo(html);
-    });
-}
-
-function arrayToUserInfo(array) {
-    array.forEach(textToUserInfo);
-}
-
-function textToUserInfo(text) {
-    document.getElementById('userInfo').innerHTML += text;
 }
 
 function loadComments(num) {
     commentElement = document.getElementById('comments');
+    translationElement = document.getElementById('translation');
     messageElement = document.getElementById('possibleMessage');
-    if (num===0) {
-        commentElement.style.display = "none";
-        messageElement.innerHTML = "<h2>You need to set your nickname to see comments.</h2>" 
-    } else if (num===1){
-        commentElement.style.display = "none";
-        messageElement.innerHTML = "<h2>You need to log in to see comments.</h2>" 
+    if (num === 0) {
+      commentElement.style.display = "none";
+      translationElement.style.display = "none";
+      messageElement.innerHTML = "<h2>You need to set your nickname to see comments.</h2>" 
+    } else if (num === 1){
+      commentElement.style.display = "none";
+      translationElement.style.display = "none";
+      messageElement.innerHTML = "<h2>You need to log in to see comments.</h2>" 
     } else {
-        commentElement.style.display = "block";
+      commentElement.style.display = "block";
+      translationElement.style.display = "block";
     }
 }
 
 function performTranslation(text, resultContainer) {
   const languageCode = document.getElementById('language').value;
-
   resultContainer.innerText = 'Loading...';
-
   const params = new URLSearchParams();
   params.append('text', text);
   params.append('languageCode', languageCode);
-
   fetch('/translate', {
     method: 'POST',
     body: params
@@ -173,11 +146,16 @@ function performTranslation(text, resultContainer) {
   });
 }
 
+function translateAndAddComment(item, index) {
+  console.log(item);
+  const container = document.getElementById('comment' + (index + 1).toString())
+  performTranslation(item.text,container);    
+}
+
 function translateComments() {
   var amount = getNumberOfComments();
-  for (i = 1; i <= amount; i++) {
-    const container = document.getElementById('comment'+i.toString())
-    const text = container.innerText;
-    performTranslation(text,container);    
-    }
+  fetch('/data?maxComments='+amount.toString()).then(response => response.json()).then((comments) => {
+    // comments is an array of objects with .text containing the comment text
+    comments.forEach(translateAndAddComment);
+  });
 }

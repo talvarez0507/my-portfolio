@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import java.util.List;  
 import java.util.ArrayList;  
 import com.google.gson.Gson;
@@ -28,44 +29,46 @@ import com.google.gson.Gson;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
+  private static final String REDIRECT_URL = "/";
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html");
     PrintWriter out = response.getWriter();
     UserService userService = UserServiceFactory.getUserService();
     List<String> html = new ArrayList<>();
-    // User is not logged in then display a login link
+    // User is not logged in then display a login link.
     if (!userService.isUserLoggedIn()) {
-      //System.err.println("Not logged in");
-      html.add("needLogin");
-      String urlToRedirectToAfterUserLogsIn = "/";
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-      html.add("<p>Hello stranger.</p>");
-      html.add("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
-      out.println(convertToJson(html));
+      String loginUrl = userService.createLoginURL(REDIRECT_URL);
+      // This is here so I know whether to load comments or not.
+      out.println("1");
+      out.println("<p>Hello stranger.</p>");
+      out.println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
       return;
     }
-    // User has not set a nickname, redirect to the set nickname page
     String nickname = getUserNickname(userService.getCurrentUser().getUserId());
+    String logoutUrl = userService.createLogoutURL(REDIRECT_URL);  
+    // User has not set a nickname, display the form for creating a nickname.
     if (nickname == null) {
-      html.add("needNickname");
-      // Only for UI purposes, to display "stranger" for their logout link
-      nickname = "stranger";
-      //response.sendRedirect("/nickname");
+      // This is here so I know whether to load comments or not.
+      out.println("0");
+      out.println("<p>Hello stranger!</p>");
+      out.println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
+      out.println("<h1>Set Nickname</h1>");
+      out.println("<h2>It appears that you're logged in, but have no nickname.</h2>");
+      out.println( "<p>Create your nickname here:</p>");
+      out.println("<form method=\"POST\" action=\"/nickname\">");
+      out.println("<input name=\"nickname\" value=\"\" />");
+      out.println("<br/>");
+      out.println("<button class=\"button\">Create</button>");
+      out.println("</form>");
+      return;
     } 
-    // User is logged in so display a logout link
-    String urlToRedirectToAfterUserLogsOut = "/";
-    String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);  
-    html.add("<p>Hello " + nickname + "!</p>");
-    html.add("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
-    out.println(convertToJson(html));
+    // This is here so I know whether to load comments or not.
+    out.println("2");
+    out.println("<p>Hello " + nickname + "!</p>");
+    out.println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
     return;
-  }
-
-  private String convertToJson(List<String> html) {
-    Gson gson = new Gson();
-    String json = gson.toJson(html);
-    return json;
   }
 
   private String getUserNickname(String id) {
@@ -74,20 +77,17 @@ public class LoginServlet extends HttpServlet {
         new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
     PreparedQuery results = datastore.prepare(query);
-    Entity entity = results.asSingleEntity();
-    if (entity == null) {
-      return null;
+    Optional<Entity> entity= Optional.ofNullable(results.asSingleEntity());
+    if (entity.isPresent()) {
+        return (String) entity.get().getProperty("nickname");
     }
-    String nickname = (String) entity.getProperty("nickname");
-    return nickname;
+    return null;
   }
  
-  private DatastoreService getDatastore() {
+  private static DatastoreService getDatastore() {
     DatastoreServiceConfig datastoreConfig =
     DatastoreServiceConfig.Builder.withReadPolicy(
         new ReadPolicy(Consistency.STRONG)).deadline(5.0);
     return DatastoreServiceFactory.getDatastoreService(datastoreConfig);
   }
-
-
 }
