@@ -24,14 +24,15 @@ import java.util.List;
 import java.util.Set;
 
 public final class FindMeetingQuery {
+
+  private static final Comparator<Event> sortAscending =
+      Comparator.comparingLong(event -> event.getWhen().start());
+
   /* This method returns a Collection of TimeRange's which allow enough time
    * for all of the required participants and all/no optional participants of
    * the MeetingRequest to attend a meeting at that time, given the events
    * they already have scheduled.
    */
-  private static final Comparator<Event> sortAscending =
-      Comparator.comparingLong(event -> event.getWhen().start());
-
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     Collection<String> requiredAttendees = request.getAttendees();
     long durationMinutes = request.getDuration();
