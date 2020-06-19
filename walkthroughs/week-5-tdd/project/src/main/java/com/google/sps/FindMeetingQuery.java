@@ -84,7 +84,7 @@ public final class FindMeetingQuery {
         if (eventTimeRange.start() - earliestPossibleSoFar >= durationMinutes) {
           possibleTimes.add(
               TimeRange.fromStartEnd(
-                  earliestPossibleSoFar, eventTimeRange.start(), /*endIsInclusive=*/ false));
+                  earliestPossibleSoFar, eventTimeRange.start(), /*inclusive=*/ false));
         }
         earliestPossibleSoFar = Math.max(earliestPossibleSoFar, eventTimeRange.end());
       }
@@ -92,8 +92,7 @@ public final class FindMeetingQuery {
     // The end of the day is potentially never included so we check.
     if (TimeRange.END_OF_DAY - earliestPossibleSoFar >= durationMinutes) {
       possibleTimes.add(
-          TimeRange.fromStartEnd(
-              earliestPossibleSoFar, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true));
+          TimeRange.fromStartEnd(earliestPossibleSoFar, TimeRange.END_OF_DAY, /*inclusive=*/ true));
     }
     return possibleTimes;
   }

@@ -93,8 +93,8 @@ public final class FindMeetingQueryTest {
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected =
         Arrays.asList(
-            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true));
+            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, /*inclusive=*/ true));
 
     Assert.assertEquals(expected, actual);
   }
@@ -125,9 +125,9 @@ public final class FindMeetingQueryTest {
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected =
         Arrays.asList(
-            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true));
+            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*inclusive=*/ true));
 
     Assert.assertEquals(expected, actual);
   }
@@ -158,8 +158,8 @@ public final class FindMeetingQueryTest {
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected =
         Arrays.asList(
-            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_1000AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true));
+            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_1000AM, TimeRange.END_OF_DAY, /*inclusive=*/ true));
 
     Assert.assertEquals(expected, actual);
   }
@@ -191,8 +191,8 @@ public final class FindMeetingQueryTest {
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected =
         Arrays.asList(
-            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_1000AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true));
+            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_1000AM, TimeRange.END_OF_DAY, /*inclusive=*/ true));
 
     Assert.assertEquals(expected, actual);
   }
@@ -222,8 +222,8 @@ public final class FindMeetingQueryTest {
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected =
         Arrays.asList(
-            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true));
+            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*inclusive=*/ true));
 
     Assert.assertEquals(expected, actual);
   }
@@ -241,12 +241,11 @@ public final class FindMeetingQueryTest {
         Arrays.asList(
             new Event(
                 "Event 1",
-                TimeRange.fromStartEnd(
-                    TimeRange.START_OF_DAY, TIME_0830AM, /*endIsInclusive=*/ false),
+                TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, /*inclusive=*/ false),
                 Arrays.asList(PERSON_A)),
             new Event(
                 "Event 2",
-                TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true),
+                TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, /*inclusive=*/ true),
                 Arrays.asList(PERSON_A)));
 
     MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_A), DURATION_30_MINUTES);
@@ -300,12 +299,11 @@ public final class FindMeetingQueryTest {
         Arrays.asList(
             new Event(
                 "Event 1",
-                TimeRange.fromStartEnd(
-                    TimeRange.START_OF_DAY, TIME_0830AM, /*endIsInclusive=*/ false),
+                TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, /*inclusive=*/ false),
                 Arrays.asList(PERSON_A)),
             new Event(
                 "Event 2",
-                TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true),
+                TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, /*inclusive=*/ true),
                 Arrays.asList(PERSON_A)));
 
     MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_A), DURATION_60_MINUTES);
@@ -342,9 +340,9 @@ public final class FindMeetingQueryTest {
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected =
         Arrays.asList(
-            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true));
+            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*inclusive=*/ true));
 
     Assert.assertEquals(expected, actual);
   }
@@ -373,7 +371,7 @@ public final class FindMeetingQueryTest {
             new Event(
                 "Event 3",
                 TimeRange.fromStartEnd(
-                    TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true),
+                    TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, /*inclusive=*/ true),
                 Arrays.asList(PERSON_C)));
 
     MeetingRequest request =
@@ -383,9 +381,9 @@ public final class FindMeetingQueryTest {
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected =
         Arrays.asList(
-            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true));
+            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*inclusive=*/ true));
 
     Assert.assertEquals(expected, actual);
   }
@@ -422,8 +420,8 @@ public final class FindMeetingQueryTest {
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected =
         Arrays.asList(
-            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true));
+            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*inclusive=*/ true));
 
     Assert.assertEquals(expected, actual);
   }
@@ -443,16 +441,15 @@ public final class FindMeetingQueryTest {
         Arrays.asList(
             new Event(
                 "Event 1",
-                TimeRange.fromStartEnd(
-                    TimeRange.START_OF_DAY, TIME_0830AM, /*endIsInclusive=*/ false),
+                TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, /*inclusive=*/ false),
                 Arrays.asList(PERSON_A)),
             new Event(
                 "Event 2",
-                TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true),
+                TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, /*inclusive=*/ true),
                 Arrays.asList(PERSON_A)),
             new Event(
                 "Event 3",
-                TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, /*endIsInclusive=*/ false),
+                TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, /*inclusive=*/ false),
                 Arrays.asList(PERSON_B)));
 
     MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_A), DURATION_30_MINUTES);
@@ -493,9 +490,9 @@ public final class FindMeetingQueryTest {
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected =
         Arrays.asList(
-            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, /*endIsInclusive=*/ false),
-            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true));
+            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, /*inclusive=*/ false),
+            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, /*inclusive=*/ true));
 
     Assert.assertEquals(expected, actual);
   }
@@ -515,12 +512,12 @@ public final class FindMeetingQueryTest {
             new Event(
                 "Event 1",
                 TimeRange.fromStartEnd(
-                    TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true),
+                    TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, /*inclusive=*/ true),
                 Arrays.asList(PERSON_A)),
             new Event(
                 "Event 2",
                 TimeRange.fromStartEnd(
-                    TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, /*endIsInclusive=*/ true),
+                    TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, /*inclusive=*/ true),
                 Arrays.asList(PERSON_B)));
 
     MeetingRequest request = new MeetingRequest(Arrays.asList(), DURATION_30_MINUTES);
