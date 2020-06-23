@@ -107,8 +107,8 @@ function deleteComments() {
 }
 
 function checkUser() {
-  fetch('/login').then((html) => html.text()).then((html) =>{
-    loadComments(parseInt(html.substring(0,1)));
+  fetch('/login').then((html) => html.text()).then((html) => {
+    loadComments(parseInt(html.substring(0, 1)));
     document.getElementById('userInfo').innerHTML += html.substring(1);
   });
 }
@@ -141,20 +141,19 @@ function performTranslation(text, resultContainer) {
     method: 'POST',
     body: params
   }).then(response => response.text())
-  .then((translatedMessage) => {
-    resultContainer.innerText = translatedMessage;
-  });
+    .then((translatedMessage) => {
+      resultContainer.innerText = translatedMessage;
+    });
 }
 
 function translateAndAddComment(item, index) {
-  console.log(item);
   const container = document.getElementById('comment' + (index + 1).toString())
   performTranslation(item.text,container);    
 }
 
 function translateComments() {
   var amount = getNumberOfComments();
-  fetch('/data?maxComments='+amount.toString()).then(response => response.json()).then((comments) => {
+  fetch('/data?maxComments=' + amount.toString()).then(response => response.json()).then((comments) => {
     // comments is an array of objects with .text containing the comment text
     comments.forEach(translateAndAddComment);
   });
