@@ -62,17 +62,18 @@ public final class FindMeetingQuery {
     }
   }
 
-  /* This method returns a Collection of TimeRange's which allow enough time
+  /**
+   * This method returns a Collection of TimeRange's which allow enough time
    * for ALL participants to attend a meeting at that time, given the events
    * they already have scheduled.
    */
   private static Collection<TimeRange> allFeasibleTimesForMeetings(
-      List<Event> eventsList, Collection<String> attendees, long durationMinutes) {
+      List<Event> events, Collection<String> attendees, long durationMinutes) {
     List<TimeRange> possibleTimes = new ArrayList<TimeRange>();
     // This represents the earliest time that we can schedule a window for the
     // meeting. As events are processed, this changes to their end times.
     int earliestPossibleSoFar = TimeRange.START_OF_DAY;
-    for (Event e : eventsList) {
+    for (Event e : events) {
       TimeRange eventTimeRange = e.getWhen();
       // Make sure the event is relevant i.e. that someone attending the event is
       // actually requesting to be in the meeting as well.
@@ -84,7 +85,7 @@ public final class FindMeetingQuery {
         if (eventTimeRange.start() - earliestPossibleSoFar >= durationMinutes) {
           possibleTimes.add(
               TimeRange.fromStartEnd(
-                  earliestPossibleSoFar, eventTimeRange.start(), /*inclusive=*/ false));
+                  earliestPossibleSoFar, eventTimeRange.start(), /* inclusive= */ false));
         }
         earliestPossibleSoFar = Math.max(earliestPossibleSoFar, eventTimeRange.end());
       }
@@ -92,7 +93,7 @@ public final class FindMeetingQuery {
     // The end of the day is potentially never included so we check.
     if (TimeRange.END_OF_DAY - earliestPossibleSoFar >= durationMinutes) {
       possibleTimes.add(
-          TimeRange.fromStartEnd(earliestPossibleSoFar, TimeRange.END_OF_DAY, /*inclusive=*/ true));
+          TimeRange.fromStartEnd(earliestPossibleSoFar, TimeRange.END_OF_DAY, /* inclusive= */ true));
     }
     return possibleTimes;
   }
