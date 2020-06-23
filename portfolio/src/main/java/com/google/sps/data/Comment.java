@@ -6,7 +6,6 @@ public final class Comment {
   private final long id;
   private final String text;
   private final long timestamp;
-  
   /**
    * This constructor uses the Datastore ID belonging
    * to the comment as the id field, the comment's 

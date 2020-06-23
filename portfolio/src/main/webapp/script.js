@@ -18,7 +18,7 @@ const allFacts = [
   'I am a student at Cornell University majoring in Operations Research.', 
   'I live in Miami, FL.', 
   'My family is from Colombia.', 
-  'I love doing Project Euler! (add me: 1047518_OObct1RuC9uGHxendSH11pjh77Nw36lG)'
+  'I enjoy doing Project Euler! (add me: 1047518_OObct1RuC9uGHxendSH11pjh77Nw36lG)'
 ];
 
 var facts = [...allFacts];
@@ -63,8 +63,15 @@ function getNewRandomFact() {
     }
 }
 
-function getComments() {
-  fetch('/data').then(response => response.json()).then((comments) => {
+function setComments(){
+  var field1 = document.getElementById('maxComments');
+  field1.innerText = 'Comments Showing: 0';
+  const maxComments= document.getElementById('numberOf').value;
+  getComments(maxComments);
+}
+
+function getComments(maxComments) {
+  fetch('/data?maxComments='+maxComments.toString()).then(response => response.json()).then((comments) => {
     const commentsListElement = document.getElementById('commentContainer');
     commentsListElement.innerHTML = '';
     comments.forEach(addCommentToPage);
@@ -72,12 +79,82 @@ function getComments() {
 }
 
 function addCommentToPage(comment) {
+  var field2 = document.getElementById('maxComments');
+  const num = parseInt(field2.innerText.substring(18));
+  field2.innerText = "Comments Showing: "+(num+1).toString();
+
   commentsListElement = document.getElementById('commentContainer');
-  commentsListElement.appendChild(createListElement(comment.text));
+  commentsListElement.innerHTML += createCommentDiv(comment.text,num+1);
 }
 
-function createListElement(text) {
-  const liElement = document.createElement('li');
-  liElement.innerText = text;
-  return liElement;
+function getNumberOfComments() {
+  var commentElement = document.getElementById('maxComments');
+  const num = parseInt(commentElement.innerText.substring(18));
+  return num;
+}
+
+function createCommentDiv(text,num) {
+  return "<div id=\"comment"+num.toString()+"\">"+text+"</div><hr>";
+}
+
+function deleteComments() {
+  var init = { method: 'POST'};
+  var request = new Request('/delete-data',init);
+
+  fetch(request).then(getComments(0));
+  var field1 = document.getElementById('maxComments');
+  field1.innerText = 'Comments Showing: 0';
+}
+
+function checkUser() {
+  fetch('/login').then((html) => html.text()).then((html) => {
+    loadComments(parseInt(html.substring(0, 1)));
+    document.getElementById('userInfo').innerHTML += html.substring(1);
+  });
+}
+
+function loadComments(num) {
+    commentElement = document.getElementById('comments');
+    translationElement = document.getElementById('translation');
+    messageElement = document.getElementById('possibleMessage');
+    if (num === 0) {
+      commentElement.style.display = "none";
+      translationElement.style.display = "none";
+      messageElement.innerHTML = "<h2>You need to set your nickname to see comments.</h2>" 
+    } else if (num === 1){
+      commentElement.style.display = "none";
+      translationElement.style.display = "none";
+      messageElement.innerHTML = "<h2>You need to log in to see comments.</h2>" 
+    } else {
+      commentElement.style.display = "block";
+      translationElement.style.display = "block";
+    }
+}
+
+function performTranslation(text, resultContainer) {
+  const languageCode = document.getElementById('language').value;
+  resultContainer.innerText = 'Loading...';
+  const params = new URLSearchParams();
+  params.append('text', text);
+  params.append('languageCode', languageCode);
+  fetch('/translate', {
+    method: 'POST',
+    body: params
+  }).then(response => response.text())
+    .then((translatedMessage) => {
+      resultContainer.innerText = translatedMessage;
+    });
+}
+
+function translateAndAddComment(item, index) {
+  const container = document.getElementById('comment' + (index + 1).toString())
+  performTranslation(item.text,container);    
+}
+
+function translateComments() {
+  var amount = getNumberOfComments();
+  fetch('/data?maxComments=' + amount.toString()).then(response => response.json()).then((comments) => {
+    // comments is an array of objects with .text containing the comment text
+    comments.forEach(translateAndAddComment);
+  });
 }

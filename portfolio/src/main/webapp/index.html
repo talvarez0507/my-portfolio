@@ -6,25 +6,18 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="checkUser()">
     <div id="content">
+      <div id="userInfo"></div>
       <h1>Tomas' Portfolio</h1>
       <p>This is my portfolio.</p>
       <p>Click on the button to get a random fact about me.</p>
-      <button onclick="addRandomFact()">Fact</button>
-      <div id="factContainer"></div>
-      <form action="/data" method="POST">
-        <p>Add comment:</p>
-        <input type="text" name="CommentText">
-        <br/><br/>
-        <input type="submit" />
-      </form>
-      <button onclick="getComments()">Fetch Comments!</button>
-      <div id="commentContainer"></div>
+      <button class="button" onclick="addRandomFact()">Fact</button>
+      <div id="factContainer"></div>     
     </div>
     <div id="picture">
       <h1>Picture</h1>
-      <img src="images/me.jpeg" alt="My senior picture" height=400>
+      <img id="tomasPic" src="images/me.jpeg" alt="My senior picture" height=400>
       <p>This is a picture of me.</p>
     </div>
     <div id="social">
@@ -36,6 +29,37 @@
       <a id="smallPic2" href="https://www.linkedin.com/in/tomas-alvarez-71779418b">
         <img alt="LinkedIn" src="images/linkedin.jpeg" height=100 width=120>
       </a>
+    </div>
+    <div id="translation">
+      <h1>Translation</h1>
+      <p>Choose a language to translate the comments into.</p>
+      <select id="language">
+        <option value="en">English</option>
+        <option value="zh">Chinese</option>
+        <option value="es">Spanish</option>
+        <option value="hi">Hindi</option>
+        <option value="ar">Arabic</option>
+      </select>
+      <button class="button" onclick="translateComments();">Translate</button>
+    </div>
+    <h1>Comment Section</h1>
+    <div id="possibleMessage"></div>
+    <div id="comments">
+      <form action="/data" method="POST">
+        <p>Add comment:</p>
+        <input type="text" name="CommentText">
+        <br/><br/>
+        <input class="button" type="submit" />
+      </form>
+      <form action=''> 
+        <p>How many comments do you want to load?</p>
+        <input id="numberOf" type="number" name="numberOf" min="0" value="0">
+        <br/><br/>
+        <input class="button" type="button" onclick="setComments()" value = "Update Comments Showing"/>
+      </form>
+      <button class="button" id="deleteButton" onclick="deleteComments()">Delete All Comments</button>
+      <div id="maxComments">Comments Showing: 0</div>
+      <div id="commentContainer"></div>
     </div>
   </body>
 </html>

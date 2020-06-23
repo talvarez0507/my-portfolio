@@ -18,7 +18,7 @@ import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceConfig.Builder;  
 import com.google.appengine.api.datastore.ReadPolicy;
 import com.google.appengine.api.datastore.ReadPolicy.Consistency; 
-
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;  
 import java.util.ArrayList;  
 
-/** Servlet that handles comments data */
+/** Servlet that handles data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
@@ -45,21 +45,22 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Query object given from Datastore
+    // Query object given from Datastore.
     Query query = new Query(COMMENT).addSort(TIME, SortDirection.DESCENDING);
     DatastoreService datastore = getDatastore();
     PreparedQuery results = datastore.prepare(query);
+    int maxComments = getNumberOfCommentsFromRequest(request);
     // Arraylist called comments that contains Comments, which are objects from
     // a class with some basic fields for relevant data.
     List<Comment> comments = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
+    for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(maxComments))) {
       comments.add(entityToComment(entity));
     }
     response.setContentType("application/json;");
     response.getWriter().println(convertToJson(comments));
   }
 
-  private Comment entityToComment(Entity entity) {
+  private static Comment entityToComment(Entity entity) {
     long id = entity.getKey().getId();
     String text = (String) entity.getProperty(TEXT);
     long timestamp = (long) entity.getProperty(TIME);
@@ -68,7 +69,7 @@ public class DataServlet extends HttpServlet {
     return comment;
   }
 
-  private String convertToJson(List<Comment> comments) {
+  private static String convertToJson(List<Comment> comments) {
     Gson gson = new Gson();
     String json = gson.toJson(comments);
     return json;
@@ -76,7 +77,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String comment = processComment(request);
+    String comment = getCommentTextFromRequest(request);
     long timestamp = System.currentTimeMillis();
     Entity commentEntity = new Entity(COMMENT);
     commentEntity.setProperty(TEXT, comment);
@@ -86,12 +87,28 @@ public class DataServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }
 
-  private String processComment(HttpServletRequest request) {
+  private static String getCommentTextFromRequest(HttpServletRequest request) {
     String CommentText = request.getParameter("CommentText");
     return CommentText;
   }
-  
-  private DatastoreService getDatastore() {
+
+  private static int getNumberOfCommentsFromRequest(HttpServletRequest request) {
+    String maxCommentsString = request.getParameter("maxComments");
+    int maxComments;
+    try {
+      maxComments = Integer.parseInt(maxCommentsString);
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert to int: " + maxCommentsString);
+      return 0;
+    }
+    if (maxComments < 0 ) {
+      System.err.println("Amount is less than 0: " + maxCommentsString);
+      return 0;
+    }
+    return maxComments;
+  }
+
+  private static DatastoreService getDatastore() {
     DatastoreServiceConfig datastoreConfig =
     DatastoreServiceConfig.Builder.withReadPolicy(
         new ReadPolicy(Consistency.STRONG)).deadline(5.0);
