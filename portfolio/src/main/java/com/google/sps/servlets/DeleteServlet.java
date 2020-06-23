@@ -54,7 +54,7 @@ public class DeleteServlet extends HttpServlet {
 
   private static DatastoreService getDatastore() {
     DatastoreServiceConfig datastoreConfig =
-    DatastoreServiceConfig.Builder.withReadPolicy(
+      DatastoreServiceConfig.Builder.withReadPolicy(
         new ReadPolicy(Consistency.STRONG)).deadline(5.0);
     return DatastoreServiceFactory.getDatastoreService(datastoreConfig);
   }
